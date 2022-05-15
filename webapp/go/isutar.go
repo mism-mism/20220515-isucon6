@@ -95,7 +95,7 @@ func main() {
 	password := os.Getenv("ISUTAR_DB_PASSWORD")
 	dbname := os.Getenv("ISUTAR_DB_NAME")
 	if dbname == "" {
-		dbname = "isutar"
+		dbname = "isuda"
 	}
 
 	db, err = sql.Open("mysql", fmt.Sprintf(

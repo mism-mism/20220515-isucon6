@@ -479,5 +479,10 @@ func main() {
 	k.Methods("POST").HandlerFunc(myHandler(keywordByKeywordDeleteHandler))
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
+
+	s := r.PathPrefix("/stars").Subrouter()
+	s.Methods("GET").HandlerFunc(myHandler(starsHandler))
+	s.Methods("POST").HandlerFunc(myHandler(starsPostHandler))
+
 	log.Fatal(http.ListenAndServe(":5000", r))
 }
