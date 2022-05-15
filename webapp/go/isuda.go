@@ -390,6 +390,52 @@ func getSession(w http.ResponseWriter, r *http.Request) *sessions.Session {
 	return session
 }
 
+func starsHandler(w http.ResponseWriter, r *http.Request) {
+	keyword := r.FormValue("keyword")
+	rows, err := db.Query(`SELECT * FROM star WHERE keyword = ?`, keyword)
+	if err != nil && err != sql.ErrNoRows {
+		panicIf(err)
+		return
+	}
+
+	stars := make([]Star, 0, 10)
+	for rows.Next() {
+		s := Star{}
+		err := rows.Scan(&s.ID, &s.Keyword, &s.UserName, &s.CreatedAt)
+		panicIf(err)
+		stars = append(stars, s)
+	}
+	rows.Close()
+
+	re.JSON(w, http.StatusOK, map[string][]Star{
+		"result": stars,
+	})
+}
+
+func starsPostHandler(w http.ResponseWriter, r *http.Request) {
+	keyword := r.FormValue("keyword")
+
+	origin := os.Getenv("ISUDA_ORIGIN")
+	if origin == "" {
+		origin = "http://localhost:5000"
+	}
+	u, err := r.URL.Parse(fmt.Sprintf("%s/keyword/%s", origin, pathURIEscape(keyword)))
+	panicIf(err)
+	resp, err := http.Get(u.String())
+	panicIf(err)
+	defer resp.Body.Close()
+	if resp.StatusCode >= 400 {
+		notFound(w)
+		return
+	}
+
+	user := r.FormValue("user")
+	_, err = db.Exec(`INSERT INTO star (keyword, user_name, created_at) VALUES (?, ?, NOW())`, keyword, user)
+	panicIf(err)
+
+	re.JSON(w, http.StatusOK, map[string]string{"result": "ok"})
+}
+
 func main() {
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6000", nil))
