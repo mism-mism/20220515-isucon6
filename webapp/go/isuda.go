@@ -350,6 +350,9 @@ func loadStars(keyword string) []*Star {
 	var data struct {
 		Result []*Star `json:result`
 	}
+	fmt.Println("-------------------------------------")
+	fmt.Println(resp)
+	fmt.Println("-------------------------------------")
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	panicIf(err)
 	return data.Result
