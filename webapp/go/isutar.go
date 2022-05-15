@@ -3,15 +3,15 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"net/http"
-	"net/url"
-	"os"
-	"strconv"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
+	"net/url"
+	"os"
+	"strconv"
 )
 
 var (
