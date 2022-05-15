@@ -325,7 +325,7 @@ func htmlify(w http.ResponseWriter, r *http.Request, content string) string {
 	for _, entry := range entries {
 		keywords = append(keywords, regexp.QuoteMeta(entry.Keyword))
 	}
-	
+
 	kw2sha := make(map[string]string, len(keywords))
 	for _, kw := range keywords {
 		if strings.Contains(content, kw) {
@@ -460,7 +460,6 @@ func main() {
 	})
 
 	r := mux.NewRouter()
-	r.UseEncodedPath()
 	r.HandleFunc("/", myHandler(topHandler))
 	r.HandleFunc("/initialize", myHandler(initializeHandler)).Methods("GET")
 	r.HandleFunc("/robots.txt", myHandler(robotsHandler))
