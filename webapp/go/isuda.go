@@ -414,14 +414,17 @@ func starsHandler(w http.ResponseWriter, r *http.Request) {
 
 func starsPostHandler(w http.ResponseWriter, r *http.Request) {
 	keyword := r.FormValue("keyword")
+	fmt.Println("ここまで来た", keyword)
 	row := db.QueryRow(`SELECT * FROM entry WHERE keyword = ?`, keyword)
 	e := Entry{}
 	err := row.Scan(&e.ID, &e.AuthorID, &e.Keyword, &e.Description, &e.UpdatedAt, &e.CreatedAt)
 	if err == sql.ErrNoRows {
+		fmt.Println("ここまで来た２")
 		notFound(w)
 		return
 	}
 
+	fmt.Println("ここまで来た３")
 	user := r.FormValue("user")
 	_, err = db.Exec(`INSERT INTO star (keyword, user_name, created_at) VALUES (?, ?, NOW())`, keyword, user)
 	panicIf(err)
