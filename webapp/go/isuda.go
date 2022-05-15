@@ -474,7 +474,7 @@ func main() {
 
 	isutarEndpoint = os.Getenv("ISUTAR_ORIGIN")
 	if isutarEndpoint == "" {
-		isutarEndpoint = "http://localhost:5001"
+		isutarEndpoint = "http://localhost:5000"
 	}
 	isupamEndpoint = os.Getenv("ISUPAM_ORIGIN")
 	if isupamEndpoint == "" {
