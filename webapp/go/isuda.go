@@ -75,10 +75,6 @@ func initializeHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = db.Exec("TRUNCATE star")
 	panicIf(err)
 
-	resp, err := http.Get(fmt.Sprintf("%s/initialize", isutarEndpoint))
-	panicIf(err)
-	defer resp.Body.Close()
-
 	re.JSON(w, http.StatusOK, map[string]string{"result": "ok"})
 }
 
