@@ -341,21 +341,20 @@ func htmlify(w http.ResponseWriter, r *http.Request, content string) string {
 }
 
 func loadStars(keyword string) []*Star {
-	v := url.Values{}
-	v.Set("keyword", keyword)
-	resp, err := http.Get(fmt.Sprintf("%s/stars", isutarEndpoint) + "?" + v.Encode())
-	panicIf(err)
-	defer resp.Body.Close()
-
-	var data struct {
-		Result []*Star `json:result`
+	rows, err := db.Query(`SELECT * FROM star WHERE keyword = ?`, keyword)
+	stars := make([]*Star, 0, 10)
+	if err != nil && err != sql.ErrNoRows {
+		return stars
 	}
-	fmt.Println("-------------------------------------")
-	fmt.Println(resp)
-	fmt.Println("-------------------------------------")
-	err = json.NewDecoder(resp.Body).Decode(&data)
-	panicIf(err)
-	return data.Result
+
+	for rows.Next() {
+		s := Star{}
+		err := rows.Scan(&s.ID, &s.Keyword, &s.UserName, &s.CreatedAt)
+		panicIf(err)
+		stars = append(stars, &s)
+	}
+	rows.Close()
+	return stars
 }
 
 func isSpamContents(content string) bool {
