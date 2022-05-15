@@ -73,6 +73,9 @@ func starsPostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6001", nil))
+	}()
 	host := os.Getenv("ISUTAR_DB_HOST")
 	if host == "" {
 		host = "localhost"
